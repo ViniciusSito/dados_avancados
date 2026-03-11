@@ -24,4 +24,4 @@ int main(){
 
     torre(numerodiscos, 'A', 'B', 'C');
     return 0;
-}
+}""
