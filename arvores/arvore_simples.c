@@ -68,6 +68,64 @@ void imprimirEmOrdem(No* raiz) {
     }
 }
 
+// ============== REMOCAO NA ABB (Arvore Binaria de Busca) ==============
+/*
+ * Em uma ABB, remover um no tem tres ideias classicas (Hibbard / algoritmo padrao):
+ *
+ * 1) Folha (sem filhos): libera o no e retorna NULL para o pai "encostar" no vazio.
+ * 2) Um unico filho: o pai passa a apontar para esse filho; o no atual e liberado.
+ * 3) Dois filhos: nao da para "apagar" sem quebrar dois ponteiros de uma vez. Substitui-se
+ *    o valor do no pelo sucessor in-order — o menor valor da subarvore direita (ou,
+ *    equivalentemente, o maximo da esquerda). Depois remove-se recursivamente esse
+ *    sucessor, que tem no maximo um filho (e a ABB continua valida).
+ *
+ * Complexidade: O(h) no pior caso, h = altura da arvore.
+ */
+
+// Retorna ponteiro ao no com menor valor na subarvore (mais a esquerda possivel).
+static No* minimoSubarvore(No* raiz) {
+    if (raiz == NULL) {
+        return NULL;
+    }
+    while (raiz->esquerda != NULL) {
+        raiz = raiz->esquerda;
+    }
+    return raiz;
+}
+
+// Remove a primeira ocorrencia de 'valor' (ABB sem duplicatas na insercao atual).
+// Retorna a (nova) raiz da subarvore para o chamador religar.
+No* remover(No* raiz, int valor) {
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    if (valor < raiz->valor) {
+        raiz->esquerda = remover(raiz->esquerda, valor);
+    } else if (valor > raiz->valor) {
+        raiz->direita = remover(raiz->direita, valor);
+    } else {
+        /* No com 'valor' encontrado */
+        if (raiz->esquerda == NULL) {
+            No* soDireita = raiz->direita;
+            free(raiz);
+            return soDireita;
+        }
+        if (raiz->direita == NULL) {
+            No* soEsquerda = raiz->esquerda;
+            free(raiz);
+            return soEsquerda;
+        }
+
+        /* Dois filhos: copia valor do sucessor in-order e remove o sucessor na direita */
+        No* suc = minimoSubarvore(raiz->direita);
+        raiz->valor = suc->valor;
+        raiz->direita = remover(raiz->direita, suc->valor);
+    }
+
+    return raiz;
+}
+
 int main() {
     // Uma arvore sempre deve comecar nula (vazia)
     No* raiz = NULL;
@@ -96,6 +154,16 @@ int main() {
 
     printf("\nImprimindo a arvore usando a funcao recursiva (Em Ordem Crescente):\n");
     // Repare na simplicidade de chamar apenas uma funcao e ela rodar todo aquele galho de chamadas
+    imprimirEmOrdem(raiz);
+    printf("\n");
+
+    printf("\nRemovendo 30 (no com dois filhos -> troca pelo sucessor 40):\n");
+    raiz = remover(raiz, 30);
+    imprimirEmOrdem(raiz);
+    printf("\n");
+
+    printf("\nRemovendo 50 (raiz com dois filhos):\n");
+    raiz = remover(raiz, 50);
     imprimirEmOrdem(raiz);
     printf("\n");
 
