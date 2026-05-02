@@ -8,7 +8,6 @@ O código está dividido nos seguintes arquivos:
 - `eventos.h`: Declarações das estruturas (enums, NoAVL) e assinaturas das funções.
 - `eventos.c`: Implementação da lógica de negócio e das operações de gerenciamento da Árvore AVL (inserção, remoção, rotações, buscas, atualizações e métricas).
 - `main.c`: Interface em linha de comando interativa para o usuário realizar operações no sistema.
-- `Makefile`: Script para compilação automatizada.
 - `Relatorio.md`: Arquivo para registrar as capturas de testes realizados.
 
 ## Instruções de Compilação e Execução
