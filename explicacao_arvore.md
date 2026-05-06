@@ -231,17 +231,17 @@ aula 07-04
   - quando não temos nó folha nulo, fazendo um calculo com nó nulo será preto
   - se um nó for vermelho, não pode ter filho vermelho e devem ter seus filhos pretos
   - todos os caminhos da raiz até uma folha deve ter o mesmo número de nós pretos
-  - o caminho mais longo da raiz ate uma folha não pode ser maior que o dobro do caminho mais curto ou seja, a quantidade de nós pretos tem que ser iguais em cada caminho 
+  - o caminho mais longo da raiz ate uma folha não pode ser maior que o dobro do caminho mais curto ou seja, a quantidade de nós pretos tem que ser iguais em cada caminho
 
-     P
+    P
     | |
     V V
-     |
-     P
+    |
+    P
 
-- nós nulos não tem valores, são nós ficticios 
+- nós nulos não tem valores, são nós ficticios
 
-Inserção de nós 
+Inserção de nós
 
 - utilizamos a mesma regra da arvore de busca
 - para cada novo nó deve ser vermelho
@@ -255,6 +255,153 @@ caso o tio seja vermelho, deve ser recoloração, caso seja preto, deve ser uma 
 
 sendo recoloração, deve trocar as cores do pai, tio e avô
 
-sendo a rotação temos que ver qual rotação deve ser feita 
+sendo a rotação temos que ver qual rotação deve ser feita
 
-- caso um filho esteja a direita e o tio tambem, necessario fazer rotação 
+- caso um filho esteja a direita e o tio tambem, necessario fazer rotação
+
+Aula 05-05
+
+remoção do nó (nó negro com filho vermelho)
+como funciona a remoção do nó preto:
+
+- Quando precisamos remover um nó preto que possui apenas um único filho e este filho é vermelho, o processo é relativamente simples.
+- Em uma árvore rubro-negra, se um nó possui apenas um filho não nulo, pelas propriedades da árvore, obrigatoriamente o nó a ser removido é preto e seu único filho é vermelho (se o filho fosse preto, os caminhos pela esquerda e pela direita teriam quantidades diferentes de nós pretos, violando as regras).
+- Para remover este nó preto, nós o substituímos pelo seu filho vermelho.
+- No entanto, a remoção do nó preto altera a quantidade de nós pretos no caminho até a folha (altura negra), violando uma das regras.
+- Para corrigir isso e rebalancear a árvore, nós simplesmente mudamos a cor do filho que o substituiu de vermelho para preto.
+- Dessa forma, a árvore mantém todas as suas propriedades intactas sem a necessidade de rotações.
+  exemplo:
+
+         10 (P)
+        /    \
+      5 (V)   15 (P)
+
+- ao remover o 10, o 5 toma o lugar do 10, porem mantendo a cor preta
+
+  10(P)
+  / \
+  5(V) 15(P)
+
+- nó preto com 1 filho preto, vai ficar vermelho
+
+- nó vermelho com 1 filho preto, fica vermelho
+
+          10(V)
+         /   \
+       5(V)   15(V)
+      /
+
+  2(V)
+  /
+  1(P)
+
+- 1(P) → 2(V) → 5(V) → 10(V)
+
+- 1(P) → 2(V) → 5(V) → 10(P)
+  \ /
+  4(V) 8(V)
+
+Corrigir remoção:
+casos classicos:
+
+- irmão vermelho -> rotação + recoloração
+- irmão negro com 2 filhos negros -> recoloração e sobe
+- irmão negro, filho esquerdo vermelho e direito negro -> rotação no irmão
+- irmão negro, filho a direita vermelho -> rotação do pai
+
+exemplo1:
+
+       20(P)
+      /    \
+    10(P)   30(P)
+
+/ \ / \  
+ 5(P) 15(P) 25(P) 35(P)
+
+- a arvore esta okay, sem vermelho, mas ela esta equilibrada e com a quantidade de nós negros correta
+- Querendo remover o no 5, a gente vai recolorir o nó 15, o irmão dele.
+- no caso 2 como é o 30 com os filhos dele, no caso devemos trocar a cor dele para vermelho.
+
+      20(P)
+
+  / \  
+   10(P) 30(V)
+  \ / \  
+   15(V) 25(P) 35(P)
+
+exemplo2:
+
+       20(P)
+      /    \
+    10(P)   30(P)
+
+/ \ / \  
+ 5(P) 15(P) 25(P) 35(P)
+\
+ 12(V)
+
+- A arvore esta equilibrada, mesmo com o 12 sendo vermelho.
+- caso a gente queira remover o 5 a arvore fica desequilibrada.
+- utilizamos o caso 3: o irmão negro e filho vermelho vão fazer rotação e recolocaração
+
+      20(P)
+
+  / \  
+   10(P) 30(P)
+  \ / \  
+   12(P) 25(P) 35(P)
+  \
+   15(V)
+
+- após realizarmos o caso 3, analisando novamente a gente percebe que ele continua desequilibrada, agora vamos fazer o passo 4.
+- rotação do pai com o irmão para a esquerda
+
+        20(P)
+       /     \
+
+  12(P) 30(P)
+  / \ / \  
+  10(P) \ 25(P) 35(P)
+  15(P)
+
+---
+
+Grafos:
+
+- Um grafo é uma estrutura de dados composta por nós e arestas
+
+Representação de grafos:
+
+- lista de adjacência
+- matriz de adjacência
+
+Representações:
+G(V, E)
+V é o conjunto de vertices, E é o conjunto de arestas
+G é uma função que mapeia cada vertice para um conjunto de vertices adjacentes a ele
+
+    1 -- 2
+    |  / |
+    3 -- 4
+
+V {1,2,3,4,5}
+E {{a1,a2,a3,a4,a5,a6}}
+
+- no caso a aresta é a ligação entre os vertices
+
+exemplo:
+
+a1: 1 -> 2
+a2: 1 -> 2
+a3: 2 -> 2
+a4: 2 -> 3
+a5: 1 -> 3
+a6: 3 -> 4
+
+Tipos de Grafos:
+
+- Grafo simples: não tem arestas duplas nem laços (arestas de um vértice para ele mesmo)
+- Grafo direcionado: arestas com direção
+- Grafo ponderado: arestas com peso
+- Grafo conexo: existe um caminho entre quaisquer dois vértices
+- Arvore: grafo conexo e sem ciclos
